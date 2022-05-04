@@ -1,0 +1,169 @@
+package assignment;
+import java.util.Arrays;
+public class Board {
+    private int sc;
+    public boolean[] pg;
+    public Board() {
+        this.pg=new boolean[20];
+        Arrays.fill(this.pg,false);
+        this.sc=20;
+} 
+    public Board(int[] filled) {
+        this();
+        int[] v2=filled;
+        int v3=filled.length;
+        for(int v4=0;v4 < v3;++v4) {
+            int p=v2[v4];
+            this.pg[p]=true;
+            --this.sc;
+} } 
+    public Board(int i) {
+        this.pg=new boolean[20];
+        Arrays.fill(this.pg,true);
+        this.sc=0;
+        this.remove(i);
+} 
+## BOARD.TXT CODE
+public Board(Board board) {
+    this.pg=Arrays.copyOf(board.pg,20);
+    this.sc=board.sc;
+}
+public boolean canMove(Mvs m) {
+    return this.pg[m.from] && this.pg[m.over] && !this.pg[m.to];
+}
+public void move(Mvs m) {
+    if (this.canMove(m)) {
+        this.remove(m.over);
+        this.movePiece(m.from,m.to);
+    }
+}
+public int getScore() {
+    return this.sc;
+}
+private void remove(int i) {
+    if (this.pg[i]) {
+        this.pg[i]=false;
+        ++this.sc;
+    }
+} 
+private void movePiece(int src,int dest) {
+    if (this.pg[src] && !this.pg[dest]) {
+        this.pg[src]=false;
+        this.pg[dest]=true;
+    }
+} 
+public String toString() {
+    StringBuilder s=new StringBuilder(this.sc + " : [");
+    boolean[] v2=this.pg;
+    int v3=v2.length;
+    for(int v4=0;v4 < v3;++v4) {
+        boolean b=v2[v4];
+        s.append(b ? "1," : "0,");
+    }
+    s.append("]");
+    return s.toString();
+}
+public String toTri() {
+    String s="";
+s=s + "
+s=s + "
+s=s + "
+s=s + " 1 3 5 7 \n";
+s=s + "0 2 4 6 8\n";
+char[] cs=s.toCharArray();
+cs[4]=(char)(this.pg[0] ? 88 : 79);
+cs[13]=(char)(this.pg[1] ? 88 : 79);
+cs[15]=(char)(this.pg[2] ? 88 : 79);
+cs[22]=(char)(this.pg[3] ? 88 : 79);
+cs[24]=(char)(this.pg[4] ? 88 : 79);
+cs[26]=(char)(this.pg[5] ? 88 : 79);
+cs[31]=(char)(this.pg[6] ? 88 : 79);
+cs[33]=(char)(this.pg[7] ? 88 : 79);
+cs[35]=(char)(this.pg[8] ? 88 : 79);
+cs[37]=(char)(this.pg[9] ? 88 : 79);
+cs[40]=(char)(this.pg[10] ? 88 : 79);
+cs[42]=(char)(this.pg[11] ? 88 : 79);
+cs[44]=(char)(this.pg[12] ? 88 : 79);
+cs[46]=(char)(this.pg[13] ? 88 : 79);
+  4    \n";
+ 3 5   \n";
+2 4 6  \n";
+        cs[48]=(char)(this.pg[14] ? 88 : 79);
+        return new String(cs);
+    }
+} 
+CODE B 
+package assignment;
+import java.util.List;
+public class Main {
+    public static void main(String[] args)
+## MAIN.TXT 
+{ 
+  Board board=new Board();
+System.out.println(board.toTri());
+for (int i=0;i < 5;i++)
+  {
+    Board boards=new Board(i);
+    List<Mvs> pegMvs=Solver.solve(boards);
+    System.out.println("=========");
+    System.out.println("=========");
+    System.out.println();
+    System.out.println("Option " + i + ":");
+    System.out.println(boards.toTri());
+    for (Mvs move : pegMvs)
+      {
+        boards.move(move);
+        System.out.println();
+        System.out.println(move.toString());
+        System.out.println(boards.toTri());
+} } 
+} } 
+TXT CODE
+package assignment;
+##MOVES. 
+public class Mvs {
+    public int from;
+    public int over;
+    public int to;
+    public static Mvs[] moves=new Mvs[]{new Mvs(0,1,3),new
+Mvs(0,2,5),new Mvs(1,3,6),new Mvs(1,4,8),new Mvs(2,4,
+7),new Mvs(2,5,9),new Mvs(3,6,10),new Mvs(3,7,12),new
+Mvs(4,7,11),new Mvs(4,8,13),new Mvs(5,8,12),new Mvs(5,9,
+14),new Mvs(3,4,5),new Mvs(6,7,8),new Mvs(7,8,9),new
+Mvs(10,11,12),new Mvs(11,12,13),new Mvs(12,13,14)};
+    public Mvs(int f,int o,int t) {
+        this.from=f;
+        this.over=o;
+this.to=t;} 
+    public String toString() {
+        return String.format("(%d,%d,%d)",this.from,this.over,this.to);
+    }
+} 
+CODE 
+package assignment;
+import java.util.ArrayList;
+import java.util.List;
+public class Solver {
+    public Solver() {
+    }
+    public static List<Mvs> solve(Board pgBrd) {
+        if (pgBrd.getScore() == 14) {
+            return new ArrayList();
+        } else {
+            Mvs[] v1=Mvs.moves;
+            int v2=v1.length;
+            for(int v3=0;v3 < v2;++v3) {
+                Mvs move=v1[v3];
+                if (pgBrd.canMove(move)) {
+## SOLVER.TXT
+Board nxtBrd=new Board(pgBrd);
+                    nxtBrd.move(move);
+                    List<Mvs> otrMves=solve(nxtBrd);
+                    if (otrMves!=null) {
+                        otrMves.add(0,move);
+                        return otrMves;
+                    }
+} } 
+            return null;
+        }
+} }
